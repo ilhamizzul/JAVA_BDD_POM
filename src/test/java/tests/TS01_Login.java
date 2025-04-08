@@ -19,7 +19,16 @@ public class TS01_Login {
     }
 
     @Test
-    public void TS0101_LoginFailed() {
+    public void TS0101_LoginSuccess() {
+        loginPage.verifyPageLoaded();
+        loginPage.fillUsername("standard_user");
+        loginPage.fillPassword("secret_sauce");
+        loginPage.clickLoginButton();
+        //loginPage.verifyErrorMessage("Username and password do not match any user in this service");
+    }
+
+    @Test
+    public void TS0102_LoginFailed() {
         loginPage.verifyPageLoaded();
         loginPage.fillUsername("random");
         loginPage.fillPassword("fgrvdbhejnk");
