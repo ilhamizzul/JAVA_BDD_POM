@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.testng.Assert;
 
 public class LoginPage extends BasePage {
 
@@ -23,6 +24,11 @@ public class LoginPage extends BasePage {
     // Actions
     public void verifyPageLoaded() {
         verifyElementsAreVisible(txtPassword, txtUsername, divLogo, btnLogin, imgMascot);
+    }
+    public void verifyErrorMessage(String message){
+        find(lblError).isDisplayed();
+        String ErrorMessage = find(lblError).getText();
+        Assert.assertTrue(ErrorMessage.contains(message));
     }
 
     public void fillUsername(String keyword) {
