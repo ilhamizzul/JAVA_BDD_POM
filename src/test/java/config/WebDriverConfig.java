@@ -12,7 +12,7 @@ public class WebDriverConfig {
         WebDriverManager.chromedriver().setup();
         WebDriver driver = new ChromeDriver();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        driver.manage().window().fullscreen();
+        driver.manage().window().maximize();
         return driver;
     }
 
@@ -20,7 +20,7 @@ public class WebDriverConfig {
         WebDriverManager.firefoxdriver().setup();
         WebDriver driver = new FirefoxDriver();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        driver.manage().window().fullscreen();
+        driver.manage().window().maximize();
         return driver;
     }
 }
