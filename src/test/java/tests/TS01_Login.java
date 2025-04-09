@@ -19,7 +19,6 @@ public class TS01_Login {
         loginPage = new LoginPage(driver);
         inventoryPage = new InventoryPage(driver);
         driver.get("https://www.saucedemo.com/v1/index.html");
-
     }
 
     @Test
