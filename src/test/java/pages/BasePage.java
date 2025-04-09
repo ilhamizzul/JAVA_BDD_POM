@@ -1,6 +1,7 @@
 package pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -22,17 +23,27 @@ public class BasePage {
     }
 
     // Method to check visibility of multiple elements
-    public void verifyElementsAreVisible(By... elements) {
+    public boolean verifyElementsAreVisible(By... elements) {
         for (By element : elements) {
             WebElement webElement = find(element);
             if (!webElement.isDisplayed()) {
                 throw new AssertionError("Element not visible: " + element.toString());
             }
         }
+        return true;
+    }
+
+    public void scrollDownByPixel(WebDriver driver, int pixels) {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollBy({ top: arguments[0], behavior: 'smooth' })", pixels);
     }
 
     protected void click(By locator) {
         find(locator).click();
+    }
+
+    protected String GetText(By locator) {
+        return find(locator).getText().trim();
     }
 
     protected void type(By locator, String text) {
