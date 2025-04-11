@@ -51,4 +51,8 @@ public class BasePage {
         element.clear();
         element.sendKeys(text);
     }
+
+    protected void navigateToPage(String url) {
+        driver.get(url);
+    }
 }
