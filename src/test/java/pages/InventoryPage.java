@@ -16,7 +16,7 @@ public class InventoryPage extends MainPage {
 
     private final By cardItemsLocator = By.xpath("//div[@class='inventory_item']");
     private final String xpathProductName = "(//div[@class='inventory_item_label'])[%d]//a//div";
-    private final String xpathItemButton = "(//div[@class='pricebar'])[%d]//button";
+    private final String xpathItemButton = "(//button[contains(@class, 'btn_inventory')])[%d]";
 
     private final List<Integer> addedItemIndexs;
 
@@ -27,11 +27,13 @@ public class InventoryPage extends MainPage {
 
     public boolean verifyIsButtonItemInAddToCartState(int index) {
         By button = By.xpath(String.format(xpathItemButton, index+1));
+        System.out.println(GetText(button).equalsIgnoreCase("ADD TO CART"));
         return GetText(button).equalsIgnoreCase("ADD TO CART");
     }
 
     public boolean verifyIsButtonItemInRemoveState(int index) {
         By button = By.xpath(String.format(xpathItemButton, index+1));
+        System.out.println(GetText(button).equalsIgnoreCase("REMOVE"));
         return GetText(button).equalsIgnoreCase("REMOVE");
     }
 
@@ -48,6 +50,9 @@ public class InventoryPage extends MainPage {
         By button = By.xpath(String.format(xpathItemButton, index+1));
 
         // verify if before click of button have an expected text which is "ADD TO CART"
+//        verifyIsButtonItemInAddToCartState(3);
+//        click(By.xpath("(//button[contains(@class, 'btn_inventory')])[4]"));
+//        verifyIsButtonItemInRemoveState(3);
         verifyIsButtonItemInAddToCartState(index);
         click(button);
         verifyIsButtonItemInRemoveState(index);

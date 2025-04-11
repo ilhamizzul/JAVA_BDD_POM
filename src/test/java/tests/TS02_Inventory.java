@@ -9,28 +9,30 @@ import org.testng.annotations.Test;
 import pages.InventoryPage;
 import pages.LoginPage;
 
-public class TS02_Inventory {
-    private WebDriver driver;
-    private InventoryPage inventoryPage;
-    private LoginPage loginPage;
-    private TS01_Login login = new TS01_Login();
-    @BeforeMethod
-    public void setUp() {
-        driver = WebDriverConfig.initChromeDriver();
-        loginPage = new LoginPage(driver);
-        inventoryPage = new InventoryPage(driver);
-        driver.get("https://www.saucedemo.com/v1/index.html");
+public class TS02_Inventory extends TestBase {
+
+    private InventoryPage LoginPrecondition() {
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.navigateToLoginPage();
+        InventoryPage inventory = loginPage.loginValidUser("standard_user", "secret_sauce");
+        return inventory;
     }
+
     @Test
     public void TS0201_AddItemToCart() {
+        InventoryPage inventoryPage = LoginPrecondition();
         int index = inventoryPage.clickButtonAddToCart();
         Assert.assertTrue(inventoryPage.verifyIsButtonItemInRemoveState(index));
     }
 
-    @AfterMethod
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
+    @Test
+    public void TS0202_RemoveItemFromCart() {
+        InventoryPage inventoryPage = LoginPrecondition();
+        inventoryPage.clickButtonAddToCart();
+        inventoryPage.clickButtonAddToCart();
+        int index = inventoryPage.clickButtonRemoveItem();
+
+        Assert.assertTrue(inventoryPage.verifyIsButtonItemInAddToCartState(index));
     }
+
 }
