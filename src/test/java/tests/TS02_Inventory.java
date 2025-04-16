@@ -19,14 +19,16 @@ public class TS02_Inventory extends TestBase {
     }
 
     @Test
-    public void TS0201_AddItemToCart() {
+    public void TS0201_AddItemToCart() throws InterruptedException {
+        Thread.sleep(3000);
         InventoryPage inventoryPage = LoginPrecondition();
         int index = inventoryPage.clickButtonAddToCart();
         Assert.assertTrue(inventoryPage.verifyIsButtonItemInRemoveState(index));
     }
 
     @Test
-    public void TS0202_RemoveItemFromCart() {
+    public void TS0202_RemoveItemFromCart() throws InterruptedException {
+        Thread.sleep(3000);
         InventoryPage inventoryPage = LoginPrecondition();
         inventoryPage.clickButtonAddToCart();
         inventoryPage.clickButtonAddToCart();

@@ -45,6 +45,7 @@ public class InventoryPage extends MainPage {
         while (addedItemIndexs.contains(index)) {
             index = randomItem(cardItems.size());
         }
+        System.out.println("index : " + index);
 
         // button item locator
         By button = By.xpath(String.format(xpathItemButton, index+1));
