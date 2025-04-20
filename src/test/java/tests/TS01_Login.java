@@ -1,10 +1,22 @@
 package tests;
 
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import pages.InventoryPage;
 import pages.LoginPage;
 
 public class TS01_Login extends TestBase {
+
+    @DataProvider(name = "loginTestData")
+    public Object[][] loginTestData() {
+        return new Object[][]{
+                {"random", "yhedujiks", "Username and password do not match any user in this service"},
+                {"", "yhedujiks", "Username is required"},
+                {"random", "", "Password is required"},
+                {"", "", "Username is required"},
+                {"locked_out_user", "secret_sauce", "Sorry, this user has been locked out."}
+        };
+    }
 
     @Test
     public void TS0101_LoginSuccess() {
@@ -16,49 +28,14 @@ public class TS01_Login extends TestBase {
         inventoryPage.verifyPageLoaded();
     }
 
-    @Test
-    public void TS0102_LoginFailedInvalidUsernameAndPassword() {
+    @Test( dataProvider = "loginTestData")
+    public void TS0102_TestLoginFailures(String username, String password, String expectedErrorMessage) {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.navigateToLoginPage();
         loginPage.verifyPageLoaded();
-        loginPage.login("random", "yhedujiks");
-        loginPage.verifyErrorMessage("Username and password do not match any user in this service");
-    }
+        loginPage.login(username, password);
+        loginPage.verifyErrorMessage(expectedErrorMessage);
 
-    @Test
-    public void TS0103_LoginFailedEmptyUsername() {
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.navigateToLoginPage();
-        loginPage.verifyPageLoaded();
-        loginPage.login("", "yhedujiks");
-        loginPage.verifyErrorMessage("Username is required");
-    }
-
-    @Test
-    public void TS0104_LoginFailedEmptyPassword() {
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.navigateToLoginPage();
-        loginPage.verifyPageLoaded();
-        loginPage.login("random", "");
-        loginPage.verifyErrorMessage("Password is required");
-    }
-
-    @Test
-    public void TS0105_LoginFailedEmptyUsernameAndPassword() {
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.navigateToLoginPage();
-        loginPage.verifyPageLoaded();
-        loginPage.login("", "");
-        loginPage.verifyErrorMessage("Username is required");
-    }
-
-    @Test
-    public void TS0106_LoginFailedLockedOutUser() {
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.navigateToLoginPage();
-        loginPage.verifyPageLoaded();
-        loginPage.login("locked_out_user", "secret_sauce");
-        loginPage.verifyErrorMessage("Sorry, this user has been locked out.");
     }
 
 }
