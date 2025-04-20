@@ -50,9 +50,6 @@ public class InventoryPage extends MainPage {
         By button = By.xpath(String.format(xpathItemButton, index+1));
 
         // verify if before click of button have an expected text which is "ADD TO CART"
-//        verifyIsButtonItemInAddToCartState(3);
-//        click(By.xpath("(//button[contains(@class, 'btn_inventory')])[4]"));
-//        verifyIsButtonItemInRemoveState(3);
         verifyIsButtonItemInAddToCartState(index);
         click(button);
         verifyIsButtonItemInRemoveState(index);

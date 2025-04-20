@@ -2,20 +2,17 @@ package pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
 public class LoginPage extends BasePage {
 
-    private final String url = "https://www.saucedemo.com/v1/index.html";
     // Locator
-    private By txtUsername = By.xpath("//input[@id='user-name']");
-    private By txtPassword = By.xpath("//input[@id='password']");
-    private By btnLogin = By.xpath("//input[@id='login-button']");
-    private By divLogo = By.xpath("//div[@class='login_logo']");
-    private By imgMascot = By.xpath("//img[@class='bot_column']");
-    private By lblError = By.xpath("//h3[@data-test='error']");
+    private final By txtUsername = By.xpath("//input[@id='user-name']");
+    private final By txtPassword = By.xpath("//input[@id='password']");
+    private final By btnLogin = By.xpath("//input[@id='login-button']");
+    private final By divLogo = By.xpath("//div[@class='login_logo']");
+    private final By imgMascot = By.xpath("//img[@class='bot_column']");
+    private final By lblError = By.xpath("//h3[@data-test='error']");
 
     // Constructor
     public LoginPage(WebDriver driver) {
@@ -24,6 +21,7 @@ public class LoginPage extends BasePage {
 
     // Actions
     public void navigateToLoginPage() {
+        String url = "https://www.saucedemo.com/v1/index.html";
         navigateToPage(url);
     }
 
@@ -33,8 +31,8 @@ public class LoginPage extends BasePage {
 
     public void verifyErrorMessage(String message){
         find(lblError).isDisplayed();
-        String ErrorMessage = find(lblError).getText();
-        Assert.assertTrue(ErrorMessage.contains(message));
+        String errorMessage = find(lblError).getText();
+        Assert.assertTrue(errorMessage.contains(message));
     }
 
     public void fillUsername(String keyword) {
@@ -49,16 +47,7 @@ public class LoginPage extends BasePage {
         click(btnLogin);
     }
 
-    public InventoryPage loginValidUser(String username, String password) {
-        login(username, password);
-        return new InventoryPage(driver);
-    }
-
-    public void loginInvalidUser(String username, String password) {
-        login(username, password);
-    }
-
-    private void login(String username, String password) {
+    public void login(String username, String password) {
         fillUsername(username);
         fillPassword(password);
         clickLoginButton();

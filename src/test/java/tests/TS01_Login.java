@@ -10,13 +10,14 @@ import pages.InventoryPage;
 import pages.LoginPage;
 
 public class TS01_Login extends TestBase {
-    
+
     @Test
     public void TS0101_LoginSuccess() {
         LoginPage loginPage = new LoginPage(driver);
+        InventoryPage inventoryPage = new InventoryPage(driver);
         loginPage.navigateToLoginPage();
         loginPage.verifyPageLoaded();
-        InventoryPage inventoryPage = loginPage.loginValidUser("standard_user", "secret_sauce");
+        loginPage.login("standard_user", "secret_sauce");
         inventoryPage.verifyPageLoaded();
     }
 
@@ -25,7 +26,7 @@ public class TS01_Login extends TestBase {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.navigateToLoginPage();
         loginPage.verifyPageLoaded();
-        loginPage.loginInvalidUser("random", "yhedujiks");
+        loginPage.login("random", "yhedujiks");
         loginPage.verifyErrorMessage("Username and password do not match any user in this service");
     }
 
