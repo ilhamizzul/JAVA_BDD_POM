@@ -11,14 +11,15 @@ import java.util.Random;
 public class InventoryPage extends MainPage {
     public InventoryPage(WebDriver driver) {
         super(driver);
-        this.addedItemIndexs = new ArrayList<>();
+        this.addedItemIndex = new ArrayList<>();
     }
 
     private final By cardItemsLocator = By.xpath("//div[@class='inventory_item']");
-    private final String xpathProductName = "(//div[@class='inventory_item_label'])[%d]//a//div";
+    private final String xpathProductName = "(//div[@class='inventory_item_name'])[position()=%d]";
+    private final String xpathProductPrice = "(//div[@class='inventory_item_price'])[position()=%d]";
     private final String xpathItemButton = "(//button[contains(@class, 'btn_inventory')])[%d]";
 
-    private final List<Integer> addedItemIndexs;
+    private final List<Integer> addedItemIndex;
 
     private int randomItem(int upperIndex) {
         Random random = new Random();
@@ -42,7 +43,7 @@ public class InventoryPage extends MainPage {
 
         // Get random index from List of card items
         int index = randomItem(cardItems.size());
-        while (addedItemIndexs.contains(index)) {
+        while (addedItemIndex.contains(index)) {
             index = randomItem(cardItems.size());
         }
 
@@ -53,21 +54,33 @@ public class InventoryPage extends MainPage {
         verifyIsButtonItemInAddToCartState(index);
         click(button);
         verifyIsButtonItemInRemoveState(index);
-        addedItemIndexs.add(index);
+        addedItemIndex.add(index);
         return index;
     }
 
     public int clickButtonRemoveItem() {
-        if (addedItemIndexs.isEmpty()) {
+        if (addedItemIndex.isEmpty()) {
             throw new IllegalStateException("No items to remove from cart.");
         }
-        int index = randomItem(addedItemIndexs.size());
-        int actualIndex = addedItemIndexs.get(index);
+        int index = randomItem(addedItemIndex.size());
+        int actualIndex = addedItemIndex.get(index);
         verifyIsButtonItemInRemoveState(actualIndex+1);
         click(By.xpath(String.format(xpathItemButton, actualIndex + 1)));
-        verifyIsButtonItemInAddToCartState(actualIndex+1);
-        addedItemIndexs.remove(index);
+        verifyIsButtonItemInAddToCartState(actualIndex + 1);
+        addedItemIndex.remove(index);
         return actualIndex+1;
+    }
+
+    public String getProductName(int index) {
+        return GetText(By.xpath(String.format(xpathProductName, index+1)));
+    }
+
+    public String getProductPrice(int index) {
+        return GetText(By.xpath(String.format(xpathProductPrice, index+1)));
+    }
+
+    public void clickButtonProduct(int index) {
+        click(By.xpath(String.format(xpathProductName, index+1)));
     }
 
 }
