@@ -10,10 +10,9 @@ public class TS02_Inventory extends TestBase {
 
     private InventoryPage LoginPrecondition() {
         LoginPage loginPage = new LoginPage(driver);
-        InventoryPage inventoryPage = new InventoryPage(driver);
         loginPage.navigateToLoginPage();
         loginPage.login("standard_user", "secret_sauce");
-        return inventoryPage;
+        return new InventoryPage(driver);
     }
 
     @Test
