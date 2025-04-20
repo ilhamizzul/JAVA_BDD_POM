@@ -3,6 +3,8 @@ package pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
+import static utils.Dictionary.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +17,13 @@ public class InventoryPage extends MainPage {
     }
 
     private final By cardItemsLocator = By.xpath("//div[@class='inventory_item']");
+    private final By drpSortBy = By.xpath("//select[@class='product_sort_container']");
     private final String xpathProductName = "(//div[@class='inventory_item_name'])[position()=%d]";
     private final String xpathProductPrice = "(//div[@class='inventory_item_price'])[position()=%d]";
     private final String xpathItemButton = "(//button[contains(@class, 'btn_inventory')])[%d]";
 
     private final List<Integer> addedItemIndex;
+
 
     private int randomItem(int upperIndex) {
         Random random = new Random();
@@ -36,6 +40,31 @@ public class InventoryPage extends MainPage {
         By button = By.xpath(String.format(xpathItemButton, index+1));
         System.out.println(GetText(button).equalsIgnoreCase("REMOVE"));
         return GetText(button).equalsIgnoreCase("REMOVE");
+    }
+
+    public void verifyItemsAreSorted(String sortBy, String orderBy) {
+        List<WebElement> cardItems = driver.findElements(cardItemsLocator);
+        for (int i = 0; i < cardItems.size() - 1; i++) {
+            if (orderBy.equalsIgnoreCase(OrderBy.NAME.toString())) {
+                String productName1 = GetText(By.xpath(String.format(xpathProductName, i+1)));
+                String productName2 = GetText(By.xpath(String.format(xpathProductName, i+2)));
+                assert sortBy.equalsIgnoreCase(SortBy.ASC.toString()) ?
+                        productName1.compareTo(productName2) <= 0 :
+                        productName1.compareTo(productName2) >= 0;
+            } else {
+                String productPrice1Text = GetText(By.xpath(String.format(xpathProductPrice, i+1))).replace("$", "");
+                String productPrice2Text = GetText(By.xpath(String.format(xpathProductPrice, i+2))).replace("$", "");
+                double productPrice1 = Double.parseDouble(productPrice1Text);
+                double productPrice2 = Double.parseDouble(productPrice2Text);
+
+                if (sortBy.equalsIgnoreCase(SortBy.ASC.toString())) {
+                    assert productPrice1 <= productPrice2 : "Prices not sorted ascending at index " + i;
+                } else {
+                    assert productPrice1 >= productPrice2 : "Prices not sorted descending at index " + i;
+                }
+            }
+
+        }
     }
 
     public int clickButtonAddToCart() {
@@ -62,13 +91,23 @@ public class InventoryPage extends MainPage {
         if (addedItemIndex.isEmpty()) {
             throw new IllegalStateException("No items to remove from cart.");
         }
-        int index = randomItem(addedItemIndex.size());
-        int actualIndex = addedItemIndex.get(index);
-        verifyIsButtonItemInRemoveState(actualIndex+1);
+        // Get a random item's index from the added items list
+        int relativeIndex = randomItem(addedItemIndex.size());
+        int actualIndex = addedItemIndex.get(relativeIndex);
+
+        // Verify the item's button is in "Remove" state
+        if (!verifyIsButtonItemInRemoveState(actualIndex)) {
+            throw new IllegalStateException("Item at index " + actualIndex + " is not in the 'Remove' state.");
+        }
+
         click(By.xpath(String.format(xpathItemButton, actualIndex + 1)));
-        verifyIsButtonItemInAddToCartState(actualIndex + 1);
-        addedItemIndex.remove(index);
-        return actualIndex+1;
+
+        if (!verifyIsButtonItemInAddToCartState(actualIndex)) {
+            throw new IllegalStateException("Item at index " + actualIndex + " did not switch back to 'Add to Cart' state.");
+        }
+
+        addedItemIndex.remove(relativeIndex);
+        return actualIndex;
     }
 
     public String getProductName(int index) {
@@ -81,6 +120,11 @@ public class InventoryPage extends MainPage {
 
     public void clickButtonProduct(int index) {
         click(By.xpath(String.format(xpathProductName, index+1)));
+    }
+
+    public void clickButtonSortBy(String sortBy) {
+        Select selectSortBy = new Select(find(drpSortBy));
+        selectSortBy.selectByValue(sortBy);
     }
 
 }
