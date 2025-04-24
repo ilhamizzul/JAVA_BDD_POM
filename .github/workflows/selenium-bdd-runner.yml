@@ -35,7 +35,7 @@ jobs:
       
     # Step 5
     - name: Execute Test
-      run: ./gradlew cucumber
+      run: ./gradlew test
       
 
   #   # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
